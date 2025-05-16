@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  qwen-ui:
+    build: .
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./UI:/app/UI
+      - /c/Users/${USERNAME}/.cache/huggingface:/root/.cache/huggingface
+    environment:
+      - PYTHONUNBUFFERED=1
+      - WATCHDOG_TIMEOUT=10
+      - MODEL_ID=dxnay/Qwen3-0.6B-Base-3_epochs_tuned
+      - BASE_MODEL_ID=unsloth/Qwen3-0.6B-Base
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: streamlit run UI/app.py --server.address 0.0.0.0
+
+volumes:
+  pip_cache: 
